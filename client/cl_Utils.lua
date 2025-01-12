@@ -15,8 +15,9 @@ if Config.Framework == "ESX" then
 elseif Config.Framework == "qbcore" and not Config.UseNewESX then
     QBCore = nil
     QBCore = exports["qb-core"]:GetCoreObject()
-elseif Config.Framework == "standalone" and not Config.UseNewESX then
-    -- ADD YOUR FRAMEWORK !!!
+elseif Config.Framework == "ndcore" and not Config.UseNewESX then
+    NDCore = nil
+    NDCore = exports["ND_Core"]:GetCoreObject()
 end
 
 -- Notify trigger
