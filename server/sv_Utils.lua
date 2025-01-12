@@ -1,7 +1,7 @@
 lib.locale()
 
 local version_count = '1.0.0'
-
+local NDCore = exports['ND_Core']:GetCoreObject()
 CreateThread(function()
     if GetResourceState(GetCurrentResourceName()) == 'started' then
         print('GJN_STRIPTER started on version: ' .. version_count)
@@ -53,8 +53,9 @@ if Config.Framework == "ESX" then
 elseif Config.Framework == "qbcore" and not Config.UseNewESX then
     QBCore = nil
     QBCore = exports["qb-core"]:GetCoreObject()
-elseif Config.Framework == "standalone" and not Config.UseNewESX then
-    -- ADD YOUR FRAMEWORK !!!
+elseif Config.Framework == "ndcore" and not Config.UseNewESX then
+    NDCore = nil
+    NDCore = exports["ND_Core"]:GetCoreObject()
 end
 
 function GetMoney(count, source)
@@ -72,8 +73,15 @@ function GetMoney(count, source)
         else
             return false
         end
-    elseif Config.Framework == "standalone" then
-        -- ADD YOUR FRAMEWORK
+    elseif Config.Framework == "ndcore" then
+        local player = NDCore.getPlayer(source)
+        if player then
+            local cash = player.getData("cash")
+            if cash and cash >= count then
+                return true
+            end
+        end
+        return false
     end
 end
 
@@ -84,7 +92,8 @@ function RemoveMoney(count, source)
     elseif Config.Framework == "qbcore" then
         local xPlayer = QBCore.Functions.GetPlayer(source)
         xPlayer.Functions.RemoveMoney('cash', count)
-    elseif Config.Framework == "standalone" then
-        -- ADD YOUR FRAMEWORK
+        elseif Config.Framework == "ndcore" then
+        local xPlayer = NDCore.getPlayer(source)
+        xPlayer.deductMoney('cash', count)
     end
 end
